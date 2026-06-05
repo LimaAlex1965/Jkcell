@@ -7,13 +7,32 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 
 export default function Cadastro() {
+const [nome, setNome] = useState("");
+const [telefone, setTelefone] = useState("");
+const [endereco, setEndereco] = useState("");
 
-  const [nome, setNome] = useState("");
-  const [telefone, setTelefone] = useState("");
-  const [endereco, setEndereco] = useState("");
+const [dataInicio, setDataInicio] = useState("");
+const [turma, setTurma] = useState("Manhã");
+const [pagamento, setPagamento] = useState("Pago");
+const [formaPagamento, setFormaPagamento] = useState("PIX");
 
+const formatarTelefone = (texto: string) => {
+
+  const numeros = texto.replace(/\D/g, "");
+
+  if (numeros.length <= 2) {
+    return `(${numeros}`;
+  }
+
+  if (numeros.length <= 7) {
+    return `(${numeros.slice(0, 2)}) ${numeros.slice(2)}`;
+  }
+
+  return `(${numeros.slice(0, 2)}) ${numeros.slice(2, 7)}-${numeros.slice(7, 11)}`;
+};
   return (
     <View style={styles.container}>
 
@@ -29,13 +48,15 @@ export default function Cadastro() {
         onChangeText={setNome}
       />
       <TextInput
-        style={styles.input}
-        placeholder="Telefone"
-        placeholderTextColor="#999"
-        value={telefone}
-        onChangeText={setTelefone}
+      style={styles.input}
+      placeholder="(85) 99999-9999"
+      placeholderTextColor="#999"
+      keyboardType="phone-pad"
+      value={telefone}
+      onChangeText={(texto) =>
+        setTelefone(formatarTelefone(texto))
+  }
       />
-
       <TextInput
          style={styles.input}
          placeholder="Endereço"
@@ -43,14 +64,62 @@ export default function Cadastro() {
           value={endereco}
         onChangeText={setEndereco}
       />
+      <TextInput
+       style={styles.input}
+        placeholder="Data de início (dd/mm/aaaa)"
+        placeholderTextColor="#999"
+        value={dataInicio}
+        onChangeText={setDataInicio}
+      />
+      <Text style={styles.label}>Turma</Text>
 
+      <Picker
+        selectedValue={turma}
+        onValueChange={(itemValue: string) => setTurma(itemValue)}
+        style={styles.picker}
+      >
+        <Picker.Item label="Manhã" value="Manhã" />
+        <Picker.Item label="Tarde" value="Tarde" />
+        <Picker.Item label="Noite" value="Noite" />
+      </Picker>
+      <Text style={styles.label}>Pagamento</Text>
+
+      <Picker
+        selectedValue={pagamento}
+        onValueChange={(itemValue: string) => setPagamento(itemValue)}
+        style={styles.picker}
+      >
+      <Picker.Item label="Pago" value="Pago" />
+      <Picker.Item label="Pendente" value="Pendente" />
+      </Picker>
+
+      <Text style={styles.label}>Forma de Pagamento</Text>
+
+      <Picker
+        selectedValue={formaPagamento}
+        onValueChange={(itemValue: string) => setFormaPagamento(itemValue)}
+       style={styles.picker}
+      >
+      <Picker.Item label="PIX" value="PIX" />
+      <Picker.Item label="Dinheiro" value="Dinheiro" />
+      <Picker.Item label="Débito" value="Débito" />
+      <Picker.Item label="Crédito" value="Crédito" />
+      </Picker>
+    
       <TouchableOpacity 
       style={styles.botao}
       onPress={() => {
 
-    Alert.alert(
-      "Aluno",
-      `Nome: ${nome}\nTelefone: ${telefone}\nEndereço: ${endereco}`
+      Alert.alert(
+       "Dados do Aluno",
+
+      `Nome: ${nome}
+      Telefone: ${telefone}
+      Endereço: ${endereco}
+      Data Início: ${dataInicio}
+      Turma: ${turma}
+      Pagamento: ${pagamento}
+      Forma: ${formaPagamento}`
     );
 
   }}
@@ -103,5 +172,18 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
   },
+  label: {
+  color: "#D4AF37",
+  fontSize: 16,
+  marginBottom: 5,
+  marginTop: 10,
+},
+
+picker: {
+  backgroundColor: "#111",
+  color: "#FFF",
+  borderRadius: 10,
+  marginBottom: 10,
+},
 
 });
