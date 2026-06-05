@@ -8,6 +8,8 @@ import {
   Alert,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
+import { alunos } from "../app/data/alunos";
+import { Aluno } from "../app/Types/Aluno";
 
 export default function Cadastro() {
 const [nome, setNome] = useState("");
@@ -32,6 +34,21 @@ const formatarTelefone = (texto: string) => {
   }
 
   return `(${numeros.slice(0, 2)}) ${numeros.slice(2, 7)}-${numeros.slice(7, 11)}`;
+};
+
+const formatarData = (texto: string) => {
+
+  const numeros = texto.replace(/\D/g, "");
+
+  if (numeros.length <= 2) {
+    return numeros;
+  }
+
+  if (numeros.length <= 4) {
+    return `${numeros.slice(0, 2)}/${numeros.slice(2)}`;
+  }
+
+  return `${numeros.slice(0, 2)}/${numeros.slice(2, 4)}/${numeros.slice(4, 8)}`;
 };
   return (
     <View style={styles.container}>
@@ -64,12 +81,15 @@ const formatarTelefone = (texto: string) => {
           value={endereco}
         onChangeText={setEndereco}
       />
-      <TextInput
-       style={styles.input}
-        placeholder="Data de início (dd/mm/aaaa)"
+     <TextInput
+        style={styles.input}
+        placeholder="dd/mm/aaaa"
         placeholderTextColor="#999"
+        keyboardType="numeric"
         value={dataInicio}
-        onChangeText={setDataInicio}
+        onChangeText={(texto) =>
+          setDataInicio(formatarData(texto))
+        }
       />
       <Text style={styles.label}>Turma</Text>
 
@@ -109,6 +129,18 @@ const formatarTelefone = (texto: string) => {
       <TouchableOpacity 
       style={styles.botao}
       onPress={() => {
+
+        const novoAluno: Aluno = {
+          nome,
+          telefone,
+          endereco,
+          dataInicio,
+          turma,
+          pagamento,
+          formaPagamento,
+      };
+
+        alunos.push(novoAluno);
 
       Alert.alert(
        "Dados do Aluno",
