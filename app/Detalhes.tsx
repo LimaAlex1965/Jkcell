@@ -1,6 +1,10 @@
 import { View, Text, StyleSheet } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { ScrollView } from "react-native";
+import { Alert } from "react-native";
+import { excluirAluno } from "./services/storage";
+import { router } from "expo-router";
+import { TouchableOpacity } from "react-native";
 
 import { alunos } from "./data/alunos";
 import { gerarCronograma } from "./utils/cronograma";
@@ -10,10 +14,44 @@ export default function Detalhes() {
   const { id } = useLocalSearchParams();
 
   const aluno = alunos[Number(id)];
-  const cronograma = aluno
-  ? gerarCronograma(aluno.dataInicio)
-  : [];
+  const removerAluno = () => {
 
+  Alert.alert(
+    "Excluir Aluno",
+    "Tem certeza que deseja excluir este aluno?",
+    [
+      {
+        text: "Cancelar",
+        style: "cancel",
+      },
+      {
+        text: "Excluir",
+        style: "destructive",
+        onPress: async () => {
+
+          await excluirAluno(
+            aluno.telefone
+          );
+
+          Alert.alert(
+            "Sucesso",
+            "Aluno removido."
+          );
+
+          router.push("/alunos");
+
+        },
+      },
+    ]
+  );
+
+};
+ const cronograma = aluno
+  ? gerarCronograma(
+      aluno.dataInicio,
+      aluno.nome
+    )
+  : [];
   if (!aluno) {
     return (
       <ScrollView style={styles.container}>
@@ -68,12 +106,27 @@ export default function Detalhes() {
         </Text>
 
 ))}
+        <TouchableOpacity
+          style={styles.botaoExcluir}
+          onPress={removerAluno}
+        >
+          <Text style={styles.textoBotao}>
+            Excluir Aluno
+          </Text>
+        </TouchableOpacity>
 
     </View>
   );
 }
-
-const styles = StyleSheet.create({
+    <TouchableOpacity
+      style={styles.botaoExcluir}
+      onPress={removerAluno}
+    >
+      <Text style={styles.textoBotao}>
+        Excluir Aluno
+      </Text>
+    </TouchableOpacity>
+    const styles = StyleSheet.create({
 
   container: {
     flex: 1,
@@ -100,5 +153,17 @@ const styles = StyleSheet.create({
   fontWeight: "bold",
   marginTop: 25,
   marginBottom: 10,
+},
+botaoExcluir: {
+  backgroundColor: "#AA0000",
+  padding: 15,
+  borderRadius: 10,
+  marginTop: 20,
+},
+
+textoBotao: {
+  color: "#FFF",
+  textAlign: "center",
+  fontWeight: "bold",
 },
 });

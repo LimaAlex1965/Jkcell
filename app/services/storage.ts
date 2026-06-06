@@ -28,3 +28,16 @@ export async function carregarAlunos(): Promise<Aluno[]> {
     return [];
   }
 }
+export async function excluirAluno(
+  telefone: string
+) {
+
+  const alunos = await carregarAlunos();
+
+  const novaLista = alunos.filter(
+    aluno => aluno.telefone !== telefone
+  );
+
+  await salvarAlunos(novaLista);
+
+}
