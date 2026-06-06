@@ -129,7 +129,58 @@ const formatarData = (texto: string) => {
       <TouchableOpacity 
       style={styles.botao}
       onPress={() => {
+        if (!nome.trim()) {
+          Alert.alert(
+            "Campo obrigatório",
+            "Informe o nome do aluno."
+           );
+            return;
+        }
 
+        if (!telefone.trim()) {
+          Alert.alert(
+            "Campo obrigatório",
+          "Informe o telefone."
+        );
+        return;
+        }
+
+        if (!dataInicio.trim()) {
+           Alert.alert(
+            "Campo obrigatório",
+            "Informe a data de início."
+        );
+         return;
+        }
+
+        const apenasNumeros = telefone.replace(/\D/g, "");
+
+        if (apenasNumeros.length < 11) {
+          Alert.alert(
+            "Telefone inválido",
+            "Digite um telefone completo."
+        );
+         return;
+        }
+
+        if (dataInicio.length !== 10) {
+          Alert.alert(
+            "Data inválida",
+            "Use o formato dd/mm/aaaa."
+        );
+        return;
+        }
+        const alunoExistente = alunos.find(
+          aluno => aluno.telefone === telefone
+      );
+
+        if (alunoExistente) {
+          Alert.alert(
+            "Aluno já cadastrado",
+            "Já existe um aluno com este telefone."
+          );
+          return;
+}
         const novoAluno: Aluno = {
           nome,
           telefone,
@@ -142,23 +193,22 @@ const formatarData = (texto: string) => {
 
         alunos.push(novoAluno);
 
-      Alert.alert(
-       "Dados do Aluno",
-
-      `Nome: ${nome}
-      Telefone: ${telefone}
-      Endereço: ${endereco}
-      Data Início: ${dataInicio}
-      Turma: ${turma}
-      Pagamento: ${pagamento}
-      Forma: ${formaPagamento}`
-    );
-
-  }}
-      >
-        <Text style={styles.textoBotao}>
-          Salvar Aluno
-        </Text>
+        Alert.alert(
+        "Sucesso",
+        "Aluno cadastrado com sucesso!"
+      );
+        setNome("");
+        setTelefone("");
+        setEndereco("");
+        setDataInicio("");
+        setTurma("Manhã");
+        setPagamento("Pago");
+        setFormaPagamento("PIX");
+     }}
+    >
+     <Text style={styles.textoBotao}>
+        Salvar Aluno
+       </Text>
       </TouchableOpacity>
 
     </View>
