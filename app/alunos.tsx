@@ -1,19 +1,38 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-} from "react-native";
-import { alunos } from "../app/data/alunos";
 import { router } from "expo-router";
-import { TouchableOpacity } from "react-native";
+import { useEffect, useState } from "react";
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { Aluno } from "./Types/Aluno";
+import { carregarAlunos } from "./services/storage";
 
 export default function Alunos() {
+
+  const [listaAlunos, setListaAlunos] = useState<Aluno[]>([]);
+
+  useEffect(() => {
+
+  async function buscarAlunos() {
+
+    const dados = await carregarAlunos();
+
+    setListaAlunos(dados);
+
+  }
+
+  buscarAlunos();
+
+}, []);
+
   return (
     <View style={styles.container}>
 
       <FlatList
-        data={alunos}
+        data={listaAlunos}
         keyExtractor={(_, index) => index.toString()}
         renderItem={({ item,index }) => (
 
