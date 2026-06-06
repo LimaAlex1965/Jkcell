@@ -4,8 +4,9 @@ import {
   StyleSheet,
   FlatList,
 } from "react-native";
-
 import { alunos } from "../app/data/alunos";
+import { router } from "expo-router";
+import { TouchableOpacity } from "react-native";
 
 export default function Alunos() {
   return (
@@ -14,9 +15,12 @@ export default function Alunos() {
       <FlatList
         data={alunos}
         keyExtractor={(_, index) => index.toString()}
-        renderItem={({ item }) => (
+        renderItem={({ item,index }) => (
 
-          <View style={styles.card}>
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => router.push(`/Detalhes?id=${index}`)}
+          >
 
             <Text style={styles.nome}>
               {item.nome}
@@ -30,7 +34,7 @@ export default function Alunos() {
               Pagamento: {item.pagamento}
             </Text>
 
-          </View>
+          </TouchableOpacity>
 
         )}
       />
