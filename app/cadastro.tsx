@@ -10,6 +10,7 @@ import {
 import { Picker } from "@react-native-picker/picker";
 import { alunos } from "../app/data/alunos";
 import { Aluno } from "../app/Types/Aluno";
+import { salvarAlunos } from "./services/storage";
 
 export default function Cadastro() {
 const [nome, setNome] = useState("");
@@ -128,7 +129,7 @@ const formatarData = (texto: string) => {
     
       <TouchableOpacity 
       style={styles.botao}
-      onPress={() => {
+      onPress={async() => {
         if (!nome.trim()) {
           Alert.alert(
             "Campo obrigatório",
@@ -192,6 +193,8 @@ const formatarData = (texto: string) => {
       };
 
         alunos.push(novoAluno);
+        
+        await salvarAlunos(alunos);
 
         Alert.alert(
         "Sucesso",
