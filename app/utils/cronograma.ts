@@ -1,4 +1,7 @@
-export function gerarCronograma(dataInicio: string) {
+export function gerarCronograma(
+  dataInicio: string,
+  nomeAluno: string
+) {
 
   const [dia, mes, ano] = dataInicio.split("/");
 
@@ -19,6 +22,7 @@ export function gerarCronograma(dataInicio: string) {
     );
 
     aulas.push({
+      aluno: nomeAluno,
       numero: i + 1,
       data: dataAula.toLocaleDateString("pt-BR")
     });
