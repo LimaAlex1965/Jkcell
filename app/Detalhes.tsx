@@ -116,6 +116,9 @@ const [aluno, setAluno] =
   const aulasConcluidas =
   calcularAulasConcluidas();
 
+  const cursoConcluido =
+  aulasConcluidas >= 12;
+
   if (!aluno) {
     return (
       <ScrollView style={styles.container}>
@@ -181,6 +184,18 @@ const [aluno, setAluno] =
 
       <Text style={styles.texto}>
         {aulasConcluidas} / 12 aulas
+      </Text>
+
+      <Text
+        style={
+          cursoConcluido
+            ? styles.concluido
+            : styles.andamento
+        }
+      >
+        {cursoConcluido
+          ? "🏆 Curso Concluído"
+          : "🟢 Em Andamento"}
       </Text>
 
       {cronograma.map((aula) => (
@@ -287,4 +302,18 @@ const [aluno, setAluno] =
     backgroundColor: "#D4AF37",
     borderRadius: 10,
 },
+
+  andamento: {
+    color: "#4CAF50",
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 20,
+  },
+
+  concluido: {
+    color: "#D4AF37",
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 20,
+  },
 });
