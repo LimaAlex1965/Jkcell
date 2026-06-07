@@ -15,36 +15,49 @@ export default function Alunos() {
 
   const [listaAlunos, setListaAlunos] = useState<Aluno[]>([]);
   const [pesquisa, setPesquisa] = useState("");
+  const [filtroTurma, setFiltroTurma] =
+  useState("Todas");
+  const [filtroPagamento, setFiltroPagamento] =
+  useState("Todos");
   const alunosFiltrados = listaAlunos.filter(
-  aluno =>
-    aluno.nome
-      .toLowerCase()
-      .includes(
-        pesquisa.toLowerCase()
-      )
+  aluno => {
+
+    const nomeValido =
+      aluno.nome
+        .toLowerCase()
+        .includes(
+          pesquisa.toLowerCase()
+        );
+
+    const turmaValida =
+      filtroTurma === "Todas"
+        ? true
+        : aluno.turma === filtroTurma;
+
+    const pagamentoValido =
+      filtroPagamento === "Todos"
+        ? true
+        : aluno.pagamento === "Pendente";
+
+    return nomeValido && turmaValida &&
+    pagamentoValido
+
+  }
 );
 
   useEffect(() => {
-        const alunosFiltrados = listaAlunos.filter(
-      aluno =>
-        aluno.nome
-          .toLowerCase()
-          .includes(
-            pesquisa.toLowerCase()
-          )
-    );
+     
+    async function buscarAlunos() {
 
-  async function buscarAlunos() {
+      const dados = await carregarAlunos();
 
-    const dados = await carregarAlunos();
+      setListaAlunos(dados);
 
-    setListaAlunos(dados);
+    }
 
-  }
+    buscarAlunos();
 
-  buscarAlunos();
-
-}, []);
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -56,6 +69,79 @@ export default function Alunos() {
         value={pesquisa}
         onChangeText={setPesquisa}
       />
+      <View style={styles.filtros}>
+
+      <TouchableOpacity
+        style={styles.botaoFiltro}
+        onPress={() =>
+          setFiltroTurma("Todas")
+        }
+      >
+        <Text style={styles.textoFiltro}>
+          Todas
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.botaoFiltro}
+        onPress={() =>
+          setFiltroTurma("Manhã")
+        }
+      >
+        <Text style={styles.textoFiltro}>
+          Manhã
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.botaoFiltro}
+        onPress={() =>
+          setFiltroTurma("Tarde")
+        }
+      >
+        <Text style={styles.textoFiltro}>
+          Tarde
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.botaoFiltro}
+        onPress={() =>
+          setFiltroTurma("Noite")
+        }
+      >
+        <Text style={styles.textoFiltro}>
+          Noite
+        </Text>
+      </TouchableOpacity>
+
+          </View>
+
+          <View style={styles.filtrosPagamento}>
+
+        <TouchableOpacity
+          style={styles.botaoFiltro}
+          onPress={() =>
+            setFiltroPagamento("Todos")
+          }
+        >
+          <Text style={styles.textoFiltro}>
+            Todos
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.botaoFiltro}
+          onPress={() =>
+            setFiltroPagamento("Pendente")
+          }
+        >
+          <Text style={styles.textoFiltro}>
+            Pendente
+          </Text>
+        </TouchableOpacity>
+
+      </View>
       <FlatList
         data={alunosFiltrados}
         keyExtractor={(_, index) => index.toString()}
@@ -125,6 +211,29 @@ const styles = StyleSheet.create({
   borderColor: "#D4AF37",
   borderRadius: 10,
   padding: 12,
+  marginBottom: 15,
+},
+filtros: {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  marginBottom: 15,
+},
+
+botaoFiltro: {
+  backgroundColor: "#D4AF37",
+  paddingHorizontal: 10,
+  paddingVertical: 8,
+  borderRadius: 8,
+},
+
+textoFiltro: {
+  color: "#000",
+  fontWeight: "bold",
+},
+filtrosPagamento: {
+  flexDirection: "row",
+  justifyContent: "center",
+  gap: 10,
   marginBottom: 15,
 },
 
