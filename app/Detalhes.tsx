@@ -132,6 +132,20 @@ const [aluno, setAluno] =
         </Text>
 
 ))}
+
+        <TouchableOpacity
+          style={styles.botaoEditar}
+          onPress={() =>
+            router.push(
+              `/editar?telefone=${aluno.telefone}`
+            )
+          }
+        >
+          <Text style={styles.textoBotao}>
+            Editar Aluno
+          </Text>
+        </TouchableOpacity>
+
         <TouchableOpacity
           style={styles.botaoExcluir}
           onPress={removerAluno}
@@ -172,7 +186,15 @@ const [aluno, setAluno] =
   fontWeight: "bold",
   marginTop: 25,
   marginBottom: 10,
-},
+  },
+  botaoEditar: {
+    backgroundColor: "#D4AF37",
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    marginTop: 20,
+    alignItems: "center",
+  },
 botaoExcluir: {
   backgroundColor: "#AA0000",
   borderWidth: 2,
@@ -182,12 +204,12 @@ botaoExcluir: {
   borderRadius: 10,
   marginTop: 20,
   marginBottom: 50,
-  alignItems: "center",
-},
+    alignItems: "center",
+  },
 
-textoBotao: {
-  color: "#FFF",
-  fontSize: 16,
-  fontWeight: "bold",
+  textoBotao: {
+    color: "#FFF",
+    fontSize: 16,
+    fontWeight: "bold",
 },
 });

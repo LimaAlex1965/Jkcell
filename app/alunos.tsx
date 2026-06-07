@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  TextInput
 } from "react-native";
 import { Aluno } from "./Types/Aluno";
 import { carregarAlunos } from "./services/storage";
@@ -13,8 +14,25 @@ import { carregarAlunos } from "./services/storage";
 export default function Alunos() {
 
   const [listaAlunos, setListaAlunos] = useState<Aluno[]>([]);
+  const [pesquisa, setPesquisa] = useState("");
+  const alunosFiltrados = listaAlunos.filter(
+  aluno =>
+    aluno.nome
+      .toLowerCase()
+      .includes(
+        pesquisa.toLowerCase()
+      )
+);
 
   useEffect(() => {
+        const alunosFiltrados = listaAlunos.filter(
+      aluno =>
+        aluno.nome
+          .toLowerCase()
+          .includes(
+            pesquisa.toLowerCase()
+          )
+    );
 
   async function buscarAlunos() {
 
@@ -31,8 +49,15 @@ export default function Alunos() {
   return (
     <View style={styles.container}>
 
+      <TextInput
+        style={styles.inputPesquisa}
+        placeholder="🔍 Buscar aluno..."
+        placeholderTextColor="#999"
+        value={pesquisa}
+        onChangeText={setPesquisa}
+      />
       <FlatList
-        data={listaAlunos}
+        data={alunosFiltrados}
         keyExtractor={(_, index) => index.toString()}
         renderItem={({ item,index }) => (
 
@@ -93,5 +118,14 @@ const styles = StyleSheet.create({
     color: "#FFF",
     marginTop: 5,
   },
+  inputPesquisa: {
+  backgroundColor: "#111",
+  color: "#FFF",
+  borderWidth: 1,
+  borderColor: "#D4AF37",
+  borderRadius: 10,
+  padding: 12,
+  marginBottom: 15,
+},
 
 });

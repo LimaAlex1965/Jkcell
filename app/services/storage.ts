@@ -41,3 +41,21 @@ export async function excluirAluno(
   await salvarAlunos(novaLista);
 
 }
+export async function atualizarAluno(
+  telefoneOriginal: string,
+  alunoAtualizado: Aluno
+) {
+
+  const alunos = await carregarAlunos();
+
+  const novaLista = alunos.map(aluno =>
+
+    aluno.telefone === telefoneOriginal
+      ? alunoAtualizado
+      : aluno
+
+  );
+
+  await salvarAlunos(novaLista);
+
+}
