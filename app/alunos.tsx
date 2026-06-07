@@ -38,7 +38,11 @@ export default function Alunos() {
 
           <TouchableOpacity
             style={styles.card}
-            onPress={() => router.push(`/Detalhes?id=${index}`)}
+            onPress={() =>
+              router.push(
+                  `/Detalhes?telefone=${item.telefone}`
+                )
+              }
           >
 
             <Text style={styles.nome}>

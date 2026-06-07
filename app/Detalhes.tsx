@@ -6,14 +6,38 @@ import { excluirAluno } from "./services/storage";
 import { router } from "expo-router";
 import { TouchableOpacity } from "react-native";
 
-import { alunos } from "./data/alunos";
+import { useEffect, useState } from "react";
+import { Aluno } from "./Types/Aluno";
+import { carregarAlunos } from "./services/storage";
 import { gerarCronograma } from "./utils/cronograma";
 
 export default function Detalhes() {
 
-  const { id } = useLocalSearchParams();
+ const { telefone } = useLocalSearchParams();
 
-  const aluno = alunos[Number(id)];
+const [aluno, setAluno] =
+  useState<Aluno | null>(null);
+
+  useEffect(() => {
+
+  async function buscarAluno() {
+
+    const lista = await carregarAlunos();
+
+    const encontrado = lista.find(
+      item => item.telefone === telefone
+    );
+
+    if (encontrado) {
+      setAluno(encontrado);
+    }
+
+  }
+
+  buscarAluno();
+
+}, [telefone]);
+
   const removerAluno = () => {
 
   Alert.alert(
@@ -29,9 +53,11 @@ export default function Detalhes() {
         style: "destructive",
         onPress: async () => {
 
-          await excluirAluno(
-            aluno.telefone
-          );
+         if (!aluno) return;
+
+        await excluirAluno(
+          aluno.telefone
+        );
 
           Alert.alert(
             "Sucesso",
@@ -63,7 +89,7 @@ export default function Detalhes() {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
 
       <Text style={styles.titulo}>
         {aluno.nome}
@@ -115,17 +141,10 @@ export default function Detalhes() {
           </Text>
         </TouchableOpacity>
 
-    </View>
+    </ScrollView>
   );
 }
-    <TouchableOpacity
-      style={styles.botaoExcluir}
-      onPress={removerAluno}
-    >
-      <Text style={styles.textoBotao}>
-        Excluir Aluno
-      </Text>
-    </TouchableOpacity>
+   
     const styles = StyleSheet.create({
 
   container: {
@@ -156,14 +175,19 @@ export default function Detalhes() {
 },
 botaoExcluir: {
   backgroundColor: "#AA0000",
-  padding: 15,
+  borderWidth: 2,
+  borderColor: "#FFFFFF",
+  paddingVertical: 15,
+  paddingHorizontal: 20,
   borderRadius: 10,
   marginTop: 20,
+  marginBottom: 50,
+  alignItems: "center",
 },
 
 textoBotao: {
   color: "#FFF",
-  textAlign: "center",
+  fontSize: 16,
   fontWeight: "bold",
 },
 });
