@@ -26,7 +26,44 @@ export function gerarCronograma(
       numero: i + 1,
       data: dataAula.toLocaleDateString("pt-BR")
     });
+
   }
 
   return aulas;
+
+}
+
+export function calcularNumeroAula(
+  dataInicio: string
+) {
+
+  const partes =
+    dataInicio.split("/");
+
+  const inicio =
+    new Date(
+      Number(partes[2]),
+      Number(partes[1]) - 1,
+      Number(partes[0])
+    );
+
+  const hoje = new Date();
+
+  const diferencaDias =
+    Math.floor(
+      (hoje.getTime() -
+        inicio.getTime()) /
+      (1000 * 60 * 60 * 24)
+    );
+
+  const aulaAtual =
+    Math.floor(
+      diferencaDias / 7
+    ) + 1;
+
+  return Math.min(
+    Math.max(aulaAtual, 1),
+    12
+  );
+
 }

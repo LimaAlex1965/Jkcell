@@ -10,6 +10,9 @@ import { useEffect, useState } from "react";
 import { carregarAlunos } from "./services/storage";
 import { Aluno } from "./Types/Aluno";
 import { router } from "expo-router";
+import {
+  calcularNumeroAula
+} from "./utils/cronograma";
 
 export default function Home() {
 
@@ -65,6 +68,23 @@ export default function Home() {
         aluno.turma === "Noite"
     ).length;
 
+  const ultimoAluno =
+    alunos.length > 0
+       ? alunos[alunos.length - 1]
+        : null;
+
+        const alunosPendentes =
+          alunos.filter(
+            aluno =>
+              aluno.pagamento === "Pendente"
+          );
+
+        const totalPendentes =
+          alunosPendentes.length;
+
+          const aulasSemana =
+            alunos.slice(0, 5);
+
   return (
         <ScrollView
       style={styles.container}
@@ -92,6 +112,30 @@ export default function Home() {
       <Text style={styles.numero}>
         {totalAlunos}
       </Text>
+
+    </View>
+
+    <View style={styles.cardGrande}>
+
+      <Text style={styles.tituloCard}>
+        Último Cadastro
+      </Text>
+
+      {ultimoAluno ? (
+        <>
+          <Text style={styles.nomeAluno}>
+            {ultimoAluno.nome}
+          </Text>
+
+          <Text style={styles.infoAluno}>
+            Turma: {ultimoAluno.turma}
+          </Text>
+        </>
+      ) : (
+        <Text style={styles.infoAluno}>
+          Nenhum aluno cadastrado
+        </Text>
+      )}
 
     </View>
 
@@ -180,6 +224,71 @@ export default function Home() {
         </Text>
       </TouchableOpacity>
 
+      <View style={styles.cardGrande}>
+
+      <Text style={styles.tituloCard}>
+        ⚠️ Alunos Pendentes
+      </Text>
+
+      {alunosPendentes.length === 0 ? (
+
+        <Text style={styles.infoAluno}>
+          Nenhuma pendência
+        </Text>
+
+      ) : (
+
+        <>
+          {alunosPendentes
+            .slice(0, 3)
+            .map((aluno, index) => (
+
+              <Text
+                key={index}
+                style={styles.infoAluno}
+              >
+                • {aluno.nome}
+              </Text>
+
+          ))}
+
+          <Text style={styles.totalPendentes}>
+            Total: {totalPendentes}
+          </Text>
+        </>
+
+      )}
+
+    </View>
+    <View style={styles.cardGrande}>
+
+    <Text style={styles.tituloCard}>
+      📅 Aulas desta Semana
+    </Text>
+
+    {aulasSemana.length === 0 ? (
+
+      <Text style={styles.infoAluno}>
+        Nenhuma aula encontrada
+      </Text>
+
+    ) : (
+
+      aulasSemana.map((aluno, index) => (
+
+        <Text
+          key={index}
+          style={styles.infoAluno}
+        >
+          • {aluno.nome} - Aula {calcularNumeroAula(aluno.dataInicio)}
+        </Text>
+
+      ))
+
+    )}
+
+  </View>
+
     </ScrollView>
   );
 }
@@ -247,15 +356,32 @@ cardPequeno: {
   marginHorizontal: 3,
 },
 
-tituloCard: {
-  color: "#FFF",
-  fontSize: 14,
-},
+  tituloCard: {
+    color: "#FFF",
+    fontSize: 14,
+  },
 
-numero: {
-  color: "#D4AF37",
-  fontSize: 28,
-  fontWeight: "bold",
-  marginTop: 5,
-},
+  numero: {
+    color: "#D4AF37",
+    fontSize: 28,
+    fontWeight: "bold",
+    marginTop: 5,
+  },
+  nomeAluno: {
+    color: "#D4AF37",
+    fontSize: 22,
+    fontWeight: "bold",
+    marginTop: 10,
+  },
+
+  infoAluno: {
+    color: "#FFF",
+    marginTop: 5,
+  },
+  totalPendentes: {
+    color: "#D4AF37",
+    fontWeight: "bold",
+    marginTop: 10,
+    fontSize: 16,
+  },
 });

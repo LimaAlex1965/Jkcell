@@ -72,12 +72,50 @@ const [aluno, setAluno] =
   );
 
 };
- const cronograma = aluno
-  ? gerarCronograma(
-      aluno.dataInicio,
-      aluno.nome
-    )
-  : [];
+  const cronograma = aluno
+  
+    ? gerarCronograma(
+        aluno.dataInicio,
+        aluno.nome
+      )
+    : [];
+  const calcularAulasConcluidas = () => {
+
+    if (!aluno) return 0;
+
+    const partes =
+      aluno.dataInicio.split("/");
+
+    const dataInicio =
+      new Date(
+        Number(partes[2]),
+        Number(partes[1]) - 1,
+        Number(partes[0])
+      );
+
+    const hoje = new Date();
+
+    const diferencaDias =
+      Math.floor(
+        (hoje.getTime() -
+          dataInicio.getTime()) /
+        (1000 * 60 * 60 * 24)
+      );
+
+    const aulas =
+      Math.floor(
+        diferencaDias / 7
+      ) + 1;
+
+    return Math.min(
+      Math.max(aulas, 0),
+      12
+    );
+
+  };
+  const aulasConcluidas =
+  calcularAulasConcluidas();
+
   if (!aluno) {
     return (
       <ScrollView style={styles.container}>
@@ -120,6 +158,29 @@ const [aluno, setAluno] =
       </Text>
       <Text style={styles.subtitulo}>
         Cronograma de Aulas
+      </Text>
+
+      <Text style={styles.subtitulo}>
+        Progresso do Curso
+      </Text>
+
+      <View style={styles.barraFundo}>
+
+        <View
+          style={[
+            styles.barraProgresso,
+            {
+              width: `${
+                (aulasConcluidas / 12) * 100
+              }%`,
+            },
+          ]}
+        />
+
+      </View>
+
+      <Text style={styles.texto}>
+        {aulasConcluidas} / 12 aulas
       </Text>
 
       {cronograma.map((aula) => (
@@ -195,21 +256,35 @@ const [aluno, setAluno] =
     marginTop: 20,
     alignItems: "center",
   },
-botaoExcluir: {
-  backgroundColor: "#AA0000",
-  borderWidth: 2,
-  borderColor: "#FFFFFF",
-  paddingVertical: 15,
-  paddingHorizontal: 20,
-  borderRadius: 10,
-  marginTop: 20,
-  marginBottom: 50,
-    alignItems: "center",
-  },
+  botaoExcluir: {
+    backgroundColor: "#AA0000",
+    borderWidth: 2,
+    borderColor: "#FFFFFF",
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    marginTop: 20,
+    marginBottom: 50,
+      alignItems: "center",
+    },
 
   textoBotao: {
     color: "#FFF",
     fontSize: 16,
     fontWeight: "bold",
+    },
+  barraFundo: {
+  width: "100%",
+  height: 20,
+  backgroundColor: "#333",
+  borderRadius: 10,
+  marginTop: 10,
+  marginBottom: 10,
+},
+
+  barraProgresso: {
+    height: 20,
+    backgroundColor: "#D4AF37",
+    borderRadius: 10,
 },
 });
