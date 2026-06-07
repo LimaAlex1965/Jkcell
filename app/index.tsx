@@ -1,9 +1,77 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
+
+import { useEffect, useState } from "react";
+import { carregarAlunos } from "./services/storage";
+import { Aluno } from "./Types/Aluno";
 import { router } from "expo-router";
 
 export default function Home() {
+
+  const [alunos, setAlunos] =
+  useState<Aluno[]>([]);
+
+  useEffect(() => {
+
+  async function buscarAlunos() {
+
+    const dados =
+      await carregarAlunos();
+
+    setAlunos(dados);
+
+  }
+
+      buscarAlunos();
+
+    }, []);
+
+
+    const totalAlunos =
+  alunos.length;
+
+  const pagos =
+    alunos.filter(
+      aluno =>
+        aluno.pagamento === "Pago"
+    ).length;
+
+  const pendentes =
+    alunos.filter(
+      aluno =>
+        aluno.pagamento === "Pendente"
+    ).length;
+
+  const manha =
+    alunos.filter(
+      aluno =>
+        aluno.turma === "Manhã"
+    ).length;
+
+  const tarde =
+    alunos.filter(
+      aluno =>
+        aluno.turma === "Tarde"
+    ).length;
+
+  const noite =
+    alunos.filter(
+      aluno =>
+        aluno.turma === "Noite"
+    ).length;
+
   return (
-    <View style={styles.container}>
+        <ScrollView
+      style={styles.container}
+      contentContainerStyle={{
+        paddingBottom: 30,
+      }}
+    >
 
       <Text style={styles.logo}>
         JK
@@ -14,6 +82,76 @@ export default function Home() {
       <Text style={styles.subtitulo}>
         Sistema de Gerenciamento de Alunos
       </Text>
+
+      <View style={styles.cardGrande}>
+
+      <Text style={styles.tituloCard}>
+        Total de Alunos
+      </Text>
+
+      <Text style={styles.numero}>
+        {totalAlunos}
+      </Text>
+
+    </View>
+
+    <View style={styles.linhaCards}>
+
+      <View style={styles.cardPequeno}>
+        <Text style={styles.tituloCard}>
+          Pagos
+        </Text>
+
+        <Text style={styles.numero}>
+          {pagos}
+        </Text>
+      </View>
+
+      <View style={styles.cardPequeno}>
+        <Text style={styles.tituloCard}>
+          Pendentes
+        </Text>
+
+        <Text style={styles.numero}>
+          {pendentes}
+        </Text>
+      </View>
+
+    </View>
+
+    <View style={styles.linhaCards}>
+
+      <View style={styles.cardPequeno}>
+        <Text style={styles.tituloCard}>
+          Manhã
+        </Text>
+
+        <Text style={styles.numero}>
+          {manha}
+        </Text>
+      </View>
+
+      <View style={styles.cardPequeno}>
+        <Text style={styles.tituloCard}>
+          Tarde
+        </Text>
+
+        <Text style={styles.numero}>
+          {tarde}
+        </Text>
+      </View>
+
+      <View style={styles.cardPequeno}>
+        <Text style={styles.tituloCard}>
+          Noite
+        </Text>
+
+        <Text style={styles.numero}>
+          {noite}
+        </Text>
+      </View>
+
+    </View>
 
       <TouchableOpacity
         style={styles.botao}
@@ -42,7 +180,7 @@ export default function Home() {
         </Text>
       </TouchableOpacity>
 
-    </View>
+    </ScrollView>
   );
 }
 
@@ -51,7 +189,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#000",
-    justifyContent: "center",
     padding: 20,
   },
 
@@ -83,4 +220,42 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
   },
+  cardGrande: {
+  backgroundColor: "#111",
+  borderWidth: 1,
+  borderColor: "#D4AF37",
+  borderRadius: 12,
+  padding: 20,
+  marginBottom: 15,
+  alignItems: "center",
+},
+
+linhaCards: {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  marginBottom: 15,
+},
+
+cardPequeno: {
+  flex: 1,
+  backgroundColor: "#111",
+  borderWidth: 1,
+  borderColor: "#D4AF37",
+  borderRadius: 12,
+  padding: 15,
+  alignItems: "center",
+  marginHorizontal: 3,
+},
+
+tituloCard: {
+  color: "#FFF",
+  fontSize: 14,
+},
+
+numero: {
+  color: "#D4AF37",
+  fontSize: 28,
+  fontWeight: "bold",
+  marginTop: 5,
+},
 });
